@@ -1,17 +1,98 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header>
+  <ion-toolbar color="medium">
     <ion-title>
-      Tab 3
+      <ion-icon name="construct-outline"></ion-icon>
+      Panel Admin
     </ion-title>
+    <ion-buttons slot="end" *ngIf="adminLogin">
+      <ion-button (click)="logoutAdmin()" color="danger">
+        <ion-icon name="log-out-outline"></ion-icon>
+        Logout
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <!-- Form Login -->
+  <div *ngIf="!adminLogin">
+    <ion-item>
+      <ion-label position="floating">Username</ion-label>
+      <ion-input [(ngModel)]="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Password</ion-label>
+      <ion-input [(ngModel)]="password" type="password"></ion-input>
+    </ion-item>
+    <ion-button expand="block" (click)="loginAdmin()">Login</ion-button>
+  </div>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <!-- Panel Admin -->
+  <div *ngIf="adminLogin">
+    <ion-segment [(ngModel)]="menu">
+      <ion-segment-button value="pesanan">Pesanan</ion-segment-button>
+      <ion-segment-button value="layanan">Tambah Layanan</ion-segment-button>
+      <!-- Tambahkan menu lain -->
+      <ion-segment-button value="lain">Menu Lain</ion-segment-button>
+    </ion-segment>
+
+    <!-- Menu Pesanan -->
+    <div *ngIf="menu === 'pesanan'">
+      <ion-list>
+        <ion-item *ngFor="let order of orders">
+          <ion-label>
+            <h3>{{ order.nama }}</h3>
+            <p>{{ order.nama_layanan }} - {{ order.tanggal_reservasi }} ({{ order.jam_reservasi }})</p>
+            <p>Status: {{ order.status }}</p>
+          </ion-label>
+          <ion-button *ngIf="order.status === 'pending'" (click)="konfirmasiPesanan(order.id)" color="success">Konfirmasi</ion-button>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <!-- Menu Tambah Layanan -->
+    <div *ngIf="menu === 'layanan'">
+      <ion-item>
+        <ion-label position="stacked">Nama Layanan</ion-label>
+        <ion-input [(ngModel)]="layanan.nama_layanan"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Kategori</ion-label>
+        <ion-input [(ngModel)]="layanan.kategori"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Deskripsi</ion-label>
+        <ion-textarea [(ngModel)]="layanan.deskripsi"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Durasi</ion-label>
+        <ion-input [(ngModel)]="layanan.durasi"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Harga</ion-label>
+        <ion-input type="number" [(ngModel)]="layanan.harga"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Gambar URL</ion-label>
+        <ion-input [(ngModel)]="layanan.gambar"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">jam tersedia</ion-label>
+        <ion-input [(ngModel)]="layanan.jam_tersedia"></ion-input>
+      </ion-item>
+      <ion-button expand="block" color="primary" (click)="tambahLayanan()">Tambah Layanan</ion-button>
+    </div>
+
+    <!-- Menu Lain -->
+    <div *ngIf="menu === 'lain'">
+      <ion-text color="medium">
+        <p>Menu tambahan bisa ditambahkan seperti:</p>
+        <ul>
+          <li>Manajemen Jadwal</li>
+          <li>Riwayat Reservasi</li>
+          <li>Data Pelanggan</li>
+        </ul>
+      </ion-text>
+    </div>
+  </div>
 </ion-content>

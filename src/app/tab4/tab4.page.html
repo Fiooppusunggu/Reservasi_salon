@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Ulasan</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h2>Hai, {{ username }}</h2>
+
+  <div *ngIf="orders.length === 0">
+    <ion-text color="medium">
+      <p>Belum ada layanan yang selesai.</p>
+    </ion-text>
+  </div>
+
+  <ion-list *ngIf="orders.length > 0">
+    <ion-item *ngFor="let order of orders">
+      <ion-label class="ion-text-wrap">
+        <h3>{{ order.nama_layanan }}</h3>
+        <p>{{ order.tanggal_reservasi }} - {{ order.jam_reservasi }}</p>
+        <p>Status: {{ order.status }}</p>
+
+        <!-- Rating -->
+        <ion-button
+  *ngFor="let star of [1, 2, 3, 4, 5]"
+  fill="clear"
+  (click)="setRating(order.id, star)"
+  [color]="getReview(order.id).rating >= star ? 'warning' : 'medium'">
+  ★
+</ion-button>
+
+        <!-- Komentar -->
+        <ion-textarea
+  [ngModel]="getReview(order.id).comment"
+  (ngModelChange)="getReview(order.id).comment = $event"
+  placeholder="Tulis komentar...">
+</ion-textarea>
+
+
+        <ion-button
+          expand="block"
+          color="success"
+          (click)="submitReview(order.id, order.service_id)">
+          Kirim Ulasan
+        </ion-button>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
